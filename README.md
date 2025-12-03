@@ -1,6 +1,6 @@
 # Passkey OneShot 
 
-> build a greeter contract that let's me create and sign with a passkey and verify the signature onchain to set a greeting
+> build a greeter contract that lets me create and sign with a passkey and verify the signature onchain to set a greeting
 
 ## built with 🏗 Scaffold-ETH 2
 
