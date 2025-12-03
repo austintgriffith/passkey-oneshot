@@ -1,79 +1,76 @@
 //SPDX-License-Identifier: MIT
-pragma solidity >=0.8.0 <0.9.0;
+pragma solidity >=0.8.24 <0.9.0;
 
-// Useful for debugging. Remove when deploying to a live network.
-import "forge-std/console.sol";
-
-// Use openzeppelin to inherit battle-tested implementations (ERC20, ERC721, etc)
-// import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/cryptography/WebAuthn.sol";
 
 /**
- * A smart contract that allows changing a state variable of the contract and tracking the changes
- * It also allows the owner to withdraw the Ether in the contract
+ * A smart contract that allows changing a state variable using passkey signatures
+ * Supports passkey (WebAuthn) signature verification using the secp256r1 precompile
  * @author BuidlGuidl
  */
 contract YourContract {
     // State Variables
-    address public immutable owner;
     string public greeting = "Building Unstoppable Apps!!!";
-    bool public premium = false;
-    uint256 public totalCounter = 0;
-    mapping(address => uint256) public userGreetingCounter;
+    address public greetingSetter;
 
-    // Events: a way to emit log statements from smart contract that can be listened to by external parties
-    event GreetingChange(address indexed greetingSetter, string newGreeting, bool premium, uint256 value);
+    // Passkey storage
+    mapping(bytes32 => bool) public registeredCredentials;
+    mapping(bytes32 => bytes32) public credentialPubKeyX;
+    mapping(bytes32 => bytes32) public credentialPubKeyY;
 
-    // Constructor: Called once on contract deployment
-    // Check packages/foundry/deploy/Deploy.s.sol
-    constructor(address _owner) {
-        owner = _owner;
-    }
+    // Events
+    event PasskeyRegistered(bytes32 indexed credentialId, bytes32 qx, bytes32 qy);
+    event GreetingChangeWithPasskey(bytes32 indexed credentialId, string newGreeting);
 
-    // Modifier: used to define a set of rules that must be met before or after a function is executed
-    // Check the withdraw() function
-    modifier isOwner() {
-        // msg.sender: predefined variable that represents address of the account that called the current function
-        require(msg.sender == owner, "Not the Owner");
-        _;
+    /**
+     * Derive an Ethereum-style address from a passkey's public key coordinates
+     * @param qx - public key X coordinate
+     * @param qy - public key Y coordinate
+     */
+    function getPasskeyAddress(bytes32 qx, bytes32 qy) public pure returns (address) {
+        return address(uint160(uint256(keccak256(abi.encodePacked(qx, qy)))));
     }
 
     /**
-     * Function that allows anyone to change the state variable "greeting" of the contract and increase the counters
-     *
-     * @param _newGreeting (string memory) - new greeting to save on the contract
+     * Register a passkey's public key on-chain
+     * @param credentialId - unique identifier for the credential (hashed rawId from WebAuthn)
+     * @param qx - public key X coordinate
+     * @param qy - public key Y coordinate
      */
-    function setGreeting(string memory _newGreeting) public payable {
-        // Print data to the anvil chain console. Remove when deploying to a live network.
+    function registerPasskey(bytes32 credentialId, bytes32 qx, bytes32 qy) public {
+        require(!registeredCredentials[credentialId], "Credential already registered");
+        
+        registeredCredentials[credentialId] = true;
+        credentialPubKeyX[credentialId] = qx;
+        credentialPubKeyY[credentialId] = qy;
 
-        console.logString("Setting new greeting");
-        console.logString(_newGreeting);
+        emit PasskeyRegistered(credentialId, qx, qy);
+    }
+
+    /**
+     * Set greeting using a passkey signature verified via secp256r1 precompile
+     * @param _newGreeting - new greeting to save on the contract
+     * @param credentialId - the registered credential ID
+     * @param auth - WebAuthn authentication assertion data
+     */
+    function setGreetingWithPasskey(
+        string memory _newGreeting,
+        bytes32 credentialId,
+        WebAuthn.WebAuthnAuth memory auth
+    ) public {
+        require(registeredCredentials[credentialId], "Credential not registered");
+
+        bytes32 qx = credentialPubKeyX[credentialId];
+        bytes32 qy = credentialPubKeyY[credentialId];
+
+        bytes memory challenge = abi.encodePacked(keccak256(abi.encodePacked(_newGreeting)));
+
+        bool isValid = WebAuthn.verify(challenge, auth, qx, qy);
+        require(isValid, "Invalid passkey signature");
 
         greeting = _newGreeting;
-        totalCounter += 1;
-        userGreetingCounter[msg.sender] += 1;
+        greetingSetter = getPasskeyAddress(qx, qy);
 
-        // msg.value: built-in global variable that represents the amount of ether sent with the transaction
-        if (msg.value > 0) {
-            premium = true;
-        } else {
-            premium = false;
-        }
-
-        // emit: keyword used to trigger an event
-        emit GreetingChange(msg.sender, _newGreeting, msg.value > 0, msg.value);
+        emit GreetingChangeWithPasskey(credentialId, _newGreeting);
     }
-
-    /**
-     * Function that allows the owner to withdraw all the Ether in the contract
-     * The function can only be called by the owner of the contract as defined by the isOwner modifier
-     */
-    function withdraw() public isOwner {
-        (bool success,) = owner.call{ value: address(this).balance }("");
-        require(success, "Failed to send Ether");
-    }
-
-    /**
-     * Function that allows the contract to receive ETH
-     */
-    receive() external payable { }
 }

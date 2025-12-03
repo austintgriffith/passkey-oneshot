@@ -8,7 +8,7 @@ contract YourContractTest is Test {
     YourContract public yourContract;
 
     function setUp() public {
-        yourContract = new YourContract(vm.addr(1));
+        yourContract = new YourContract();
     }
 
     function testMessageOnDeployment() public view {
