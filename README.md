@@ -1,4 +1,8 @@
-# 🏗 Scaffold-ETH 2
+# Passkey OneShot 
+
+> build a greeter contract that let's me create and sign with a passkey and verify the signature onchain to set a greeting
+
+## built with 🏗 Scaffold-ETH 2
 
 <h4 align="center">
   <a href="https://docs.scaffoldeth.io">Documentation</a> |
