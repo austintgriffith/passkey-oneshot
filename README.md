@@ -1,6 +1,8 @@
-# Passkey OneShot 
+# Passkey OneShot
 
 > build a greeter contract that lets me create and sign with a passkey and verify the signature onchain to set a greeting
+
+[live demo at https://passkeydemo.atg.eth.link/](https://passkeydemo.atg.eth.link/)
 
 ## built with 🏗 Scaffold-ETH 2
 
@@ -69,7 +71,6 @@ Run smart contract test with `yarn foundry:test`
 - Edit your smart contracts in `packages/foundry/contracts`
 - Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
 - Edit your deployment scripts in `packages/foundry/script`
-
 
 ## Documentation
 
