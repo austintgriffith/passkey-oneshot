@@ -6,30 +6,20 @@
 
 ## built with 🏗 Scaffold-ETH 2
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+<img width="511" height="362" alt="image" src="https://github.com/user-attachments/assets/d7e9548e-b700-45e2-8746-53b6ec9bd102" />
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+---
 
-⚙️ Built using NextJS, RainbowKit, Foundry, Wagmi, Viem, and Typescript.
+<img width="436" height="409" alt="image" src="https://github.com/user-attachments/assets/9035f19e-ae68-49b4-abaa-00bce12aa3b0" />
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+---
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+<img width="538" height="389" alt="image" src="https://github.com/user-attachments/assets/3d22fd56-60cf-4822-81ed-0e479204f600" />
 
-## Requirements
+---
 
-Before you begin, you need to install the following tools:
+<img width="423" height="145" alt="image" src="https://github.com/user-attachments/assets/73f19c8a-41cc-4f84-996a-372a7bbdc0de" />
 
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
 
 ## Quickstart
 
